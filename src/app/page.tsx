@@ -37,6 +37,8 @@ export default function Home() {
   const [popularCryptos, setPopularCryptos] = useState<PopularCrypto[]>([])
   const [loading, setLoading] = useState(true)
   const [selectedCoin, setSelectedCoin] = useState('bitcoin')
+  const [searchQuery, setSearchQuery] = useState('')
+  const [searchError, setSearchError] = useState('')
 
   const fetchCryptoData = async (coin: string, refresh = false) => {
     try {
@@ -76,6 +78,31 @@ export default function Home() {
 
   const handleRefresh = () => {
     fetchCryptoData(selectedCoin, true)
+  }
+
+  const handleSearch = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!searchQuery.trim()) return
+    
+    setSearchError('')
+    setLoading(true)
+    
+    try {
+      const response = await fetch(`/api/crypto?coin=${searchQuery.toLowerCase().trim()}`)
+      const result = await response.json()
+      
+      if (result.success) {
+        setSelectedCoin(searchQuery.toLowerCase().trim())
+        setCryptoData(result.data)
+        setSearchQuery('')
+      } else {
+        setSearchError(`Could not find cryptocurrency: ${searchQuery}. Try using the full name or symbol.`)
+      }
+    } catch (error) {
+      setSearchError('Error searching for cryptocurrency. Please try again.')
+    } finally {
+      setLoading(false)
+    }
   }
 
   const formatPrice = (price: number) => {
@@ -155,6 +182,33 @@ export default function Home() {
                   {cryptoData?.weather} {(cryptoData?.change24h || 0) > 0 ? 'Bullish winds' : 'Bearish storms'} with {(cryptoData?.change24h || 0) > 5 ? 'moon' : 'volatility'} potential!
                 </span>
               </p>
+              
+              {/* Custom Search Box */}
+              <div className="mt-6 mb-4">
+                <form onSubmit={handleSearch} className="flex flex-col sm:flex-row gap-3">
+                  <div className="flex-1">
+                    <input
+                      type="text"
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      placeholder="Search any cryptocurrency (e.g., 'dogecoin', 'ADA', 'polkadot')..."
+                      className="w-full px-4 py-3 bg-white/10 hover:bg-white/20 rounded-lg text-[var(--text-primary)] border border-white/20 focus:border-blue-400 focus:outline-none transition-all duration-300 hover-scale backdrop-blur-sm placeholder:text-white/50"
+                    />
+                  </div>
+                  <button
+                    type="submit"
+                    disabled={!searchQuery.trim() || loading}
+                    className="px-6 py-3 bg-gradient-to-r from-blue-500/20 to-purple-500/20 hover:from-blue-500/40 hover:to-purple-500/40 rounded-lg text-[var(--text-primary)] border border-blue-400/30 transition-all duration-300 hover-scale disabled:opacity-50 disabled:cursor-not-allowed font-medium"
+                  >
+                    🔍 Search Weather
+                  </button>
+                </form>
+                {searchError && (
+                  <div className="mt-3 p-3 bg-red-500/20 border border-red-400/30 rounded-lg text-red-300 text-sm animate-slide-in">
+                    {searchError}
+                  </div>
+                )}
+              </div>
               <div className="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-4 relative z-10">
                 <div className="flex flex-col gap-1 rounded-xl p-4 bg-gradient-to-br from-purple-600/20 to-blue-600/20 hover-scale animate-pulse-custom">
                   <p className="text-sm font-medium text-[var(--text-secondary)]">🌪️ Volatility Winds</p>

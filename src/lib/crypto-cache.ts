@@ -78,18 +78,41 @@ export class CryptoCacheService {
 
   async getCryptoFromAPI(symbol: string): Promise<CryptoCurrency | null> {
     try {
-      const response = await fetch(
+      // First try searching by ID directly
+      let response = await fetch(
         `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=${symbol.toLowerCase()}&order=market_cap_desc&per_page=1&page=1&sparkline=false&price_change_percentage=24h`
       );
       
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+      if (response.ok) {
+        const data = await response.json();
+        if (Array.isArray(data) && data.length > 0) {
+          return data[0];
+        }
       }
       
-      const data = await response.json();
-      if (Array.isArray(data) && data.length > 0) {
-        return data[0];
+      // If direct ID search fails, try searching with the search endpoint
+      const searchResponse = await fetch(
+        `https://api.coingecko.com/api/v3/search?query=${encodeURIComponent(symbol)}`
+      );
+      
+      if (searchResponse.ok) {
+        const searchData = await searchResponse.json();
+        if (searchData.coins && searchData.coins.length > 0) {
+          // Get the first matching coin's ID and fetch its data
+          const coinId = searchData.coins[0].id;
+          const detailResponse = await fetch(
+            `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=${coinId}&order=market_cap_desc&per_page=1&page=1&sparkline=false&price_change_percentage=24h`
+          );
+          
+          if (detailResponse.ok) {
+            const detailData = await detailResponse.json();
+            if (Array.isArray(detailData) && detailData.length > 0) {
+              return detailData[0];
+            }
+          }
+        }
       }
+      
       return null;
     } catch (error) {
       console.error('Error fetching from CoinGecko API:', error);
@@ -158,6 +181,7 @@ export class CryptoCacheService {
 
   async getPopularCryptos(): Promise<CryptoCurrency[]> {
     return new Promise((resolve, reject) => {
+      // First try to get recent cached data (within 15 minutes)
       this.db.all(
         `SELECT * FROM crypto_prices 
          WHERE datetime(cached_at) > datetime('now', '-15 minutes')
@@ -169,7 +193,28 @@ export class CryptoCacheService {
             reject(err);
             return;
           }
-          resolve(rows as CryptoCurrency[]);
+          
+          // If we have recent data, return it
+          if (rows && rows.length >= 5) {
+            resolve(rows as CryptoCurrency[]);
+            return;
+          }
+          
+          // Otherwise, get any cached data (even if older) to show something
+          this.db.all(
+            `SELECT * FROM crypto_prices 
+             WHERE market_cap_rank IS NOT NULL
+             ORDER BY market_cap_rank ASC 
+             LIMIT 10`,
+            [],
+            (err2, allRows) => {
+              if (err2) {
+                reject(err2);
+                return;
+              }
+              resolve(allRows as CryptoCurrency[]);
+            }
+          );
         }
       );
     });
