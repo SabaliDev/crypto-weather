@@ -1,0 +1,193 @@
+@import url('https://fonts.googleapis.com/css2?display=swap&family=Noto+Sans:wght@400;500;700;900&family=Space+Grotesk:wght@400;500;700');
+
+:root {
+  --primary-color: #60a5fa;
+  --background-color: #0F172A;
+  --surface-color: #1E293B;
+  --text-primary: #F8FAFC;
+  --text-secondary: #94A3B8;
+  --sunny-bg: #fbbf24;
+  --sunny-text: #92400E;
+  --stormy-bg: #8B5CF6;
+  --stormy-text: #F3E8FF;
+  --cloudy-bg: #9CA3AF;
+  --cloudy-text: #1F2937;
+  --crypto-purple: #8b5cf6;
+  --crypto-blue: #3b82f6;
+  --crypto-green: #10b981;
+  --crypto-orange: #f59e0b;
+  --crypto-card-bg: #1E293B;
+  --crypto-border: rgba(255, 255, 255, 0.1);
+}
+
+body {
+  font-family: 'Space Grotesk', sans-serif;
+}
+
+/* Fun animations and micro-interactions */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+@keyframes sparkle {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.7; transform: scale(1.2); }
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(-20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  25% { transform: translateY(-5px); }
+  75% { transform: translateY(5px); }
+}
+
+@keyframes glow {
+  0%, 100% { box-shadow: 0 0 10px rgba(25, 121, 230, 0.3); }
+  50% { box-shadow: 0 0 20px rgba(25, 121, 230, 0.6), 0 0 30px rgba(25, 121, 230, 0.4); }
+}
+
+.animate-float { animation: float 3s ease-in-out infinite; }
+.animate-pulse-custom { animation: pulse 2s ease-in-out infinite; }
+.animate-sparkle { animation: sparkle 1.5s ease-in-out infinite; }
+.animate-slide-in { animation: slideIn 0.6s ease-out; }
+.animate-bounce-gentle { animation: bounce 2s ease-in-out infinite; }
+.animate-glow { animation: glow 3s ease-in-out infinite; }
+
+/* Enhanced hover effects */
+.hover-lift {
+  transition: all 0.3s ease;
+}
+.hover-lift:hover {
+  transform: translateY(-5px) scale(1.02);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.hover-scale {
+  transition: all 0.3s ease;
+}
+.hover-scale:hover {
+  transform: scale(1.05);
+  z-index: 10;
+}
+
+.hover-glow {
+  transition: all 0.3s ease;
+}
+.hover-glow:hover {
+  box-shadow: 0 5px 25px rgba(25, 121, 230, 0.6);
+  transform: translateY(-2px);
+}
+
+/* Interactive card effects */
+.crypto-card {
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.crypto-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  transition: left 0.5s ease;
+  z-index: 1;
+}
+
+.crypto-card:hover::before {
+  left: 100%;
+}
+
+/* Pulse effect for important elements */
+.pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 10px rgba(139, 92, 246, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(139, 92, 246, 0.6), 0 0 30px rgba(139, 92, 246, 0.4);
+  }
+}
+
+/* Gradient backgrounds */
+.gradient-crypto {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.gradient-sunny {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+.gradient-storm {
+  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+}
+
+/* Custom card styling */
+.crypto-card {
+  background: linear-gradient(145deg, rgba(30, 41, 59, 0.9), rgba(15, 23, 42, 0.9));
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Fun gradient overlays */
+.gradient-overlay::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(45deg, rgba(139, 92, 246, 0.1), rgba(59, 130, 246, 0.1), rgba(16, 185, 129, 0.1));
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.gradient-text {
+  background: linear-gradient(45deg, #8b5cf6, #3b82f6, #10b981);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Neon glow effects */
+.neon-blue {
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.3), 0 0 40px rgba(59, 130, 246, 0.2);
+}
+
+.neon-purple {
+  box-shadow: 0 0 20px rgba(139, 92, 246, 0.3), 0 0 40px rgba(139, 92, 246, 0.2);
+}
+
+.neon-green {
+  box-shadow: 0 0 20px rgba(16, 185, 129, 0.3), 0 0 40px rgba(16, 185, 129, 0.2);
+}
+
+
+/* Select styling improvements for forecast page */
+.forecast-select {
+  background-color: var(--crypto-card-bg) !important;
+  color: var(--text-primary) !important;
+  border: 1px solid var(--crypto-border) !important;
+}
+
+.forecast-select option {
+  background-color: var(--crypto-card-bg) !important;
+  color: var(--text-primary) !important;
+}
