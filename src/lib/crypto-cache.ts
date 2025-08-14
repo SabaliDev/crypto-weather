@@ -1,4 +1,4 @@
-import { getDatabase } from './database';
+import { supabase } from './supabase';
 import { getMCPClient } from './mcp-client';
 
 export interface CryptoCurrency {
@@ -22,7 +22,6 @@ export interface CryptoHistory {
 }
 
 export class CryptoCacheService {
-  private db = getDatabase();
   private mcpClient = getMCPClient();
   private readonly CACHE_DURATION = 15 * 60 * 1000; // 15 minutes
 
@@ -31,49 +30,49 @@ export class CryptoCacheService {
   }
 
   async getCachedCrypto(symbol: string): Promise<CryptoCurrency | null> {
-    return new Promise((resolve, reject) => {
-      this.db.get(
-        `SELECT * FROM crypto_prices WHERE symbol = ? AND 
-         cached_at > datetime('now', '-15 minutes')`,
-        [symbol.toLowerCase()],
-        (err, row) => {
-          if (err) {
-            reject(err);
-            return;
-          }
-          resolve(row as CryptoCurrency || null);
-        }
-      );
-    });
+    try {
+      const { data, error } = await supabase
+        .from('crypto_prices')
+        .select('*')
+        .eq('symbol', symbol.toLowerCase())
+        .gte('cached_at', new Date(Date.now() - this.CACHE_DURATION).toISOString())
+        .single();
+
+      if (error && error.code !== 'PGRST116') { // PGRST116 is "not found"
+        throw error;
+      }
+
+      return data || null;
+    } catch (error) {
+      console.error('Error getting cached crypto:', error);
+      return null;
+    }
   }
 
   async cacheCrypto(crypto: CryptoCurrency): Promise<void> {
-    return new Promise((resolve, reject) => {
-      this.db.run(
-        `INSERT OR REPLACE INTO crypto_prices 
-         (id, symbol, name, current_price, market_cap, market_cap_rank, 
-          price_change_24h, price_change_percentage_24h, last_updated) 
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-        [
-          crypto.id,
-          crypto.symbol.toLowerCase(),
-          crypto.name,
-          crypto.current_price,
-          crypto.market_cap,
-          crypto.market_cap_rank,
-          crypto.price_change_24h,
-          crypto.price_change_percentage_24h,
-          crypto.last_updated
-        ],
-        (err) => {
-          if (err) {
-            reject(err);
-            return;
-          }
-          resolve();
-        }
-      );
-    });
+    try {
+      const { error } = await supabase
+        .from('crypto_prices')
+        .upsert({
+          id: crypto.id,
+          symbol: crypto.symbol.toLowerCase(),
+          name: crypto.name,
+          current_price: crypto.current_price,
+          market_cap: crypto.market_cap,
+          market_cap_rank: crypto.market_cap_rank,
+          price_change_24h: crypto.price_change_24h,
+          price_change_percentage_24h: crypto.price_change_percentage_24h,
+          last_updated: crypto.last_updated,
+          cached_at: new Date().toISOString()
+        });
+
+      if (error) {
+        throw error;
+      }
+    } catch (error) {
+      console.error('Error caching crypto:', error);
+      throw error;
+    }
   }
 
   async getCryptoFromAPI(symbol: string): Promise<CryptoCurrency | null> {
@@ -137,86 +136,81 @@ export class CryptoCacheService {
   }
 
   async addCryptoHistory(history: CryptoHistory): Promise<void> {
-    return new Promise((resolve, reject) => {
-      this.db.run(
-        `INSERT INTO crypto_history 
-         (crypto_id, price, market_cap, volume, timestamp) 
-         VALUES (?, ?, ?, ?, ?)`,
-        [
-          history.crypto_id,
-          history.price,
-          history.market_cap,
-          history.volume,
-          history.timestamp
-        ],
-        (err) => {
-          if (err) {
-            reject(err);
-            return;
-          }
-          resolve();
-        }
-      );
-    });
+    try {
+      const { error } = await supabase
+        .from('crypto_history')
+        .insert({
+          crypto_id: history.crypto_id,
+          price: history.price,
+          market_cap: history.market_cap,
+          volume: history.volume,
+          timestamp: history.timestamp
+        });
+
+      if (error) {
+        throw error;
+      }
+    } catch (error) {
+      console.error('Error adding crypto history:', error);
+      throw error;
+    }
   }
 
   async getCryptoHistory(cryptoId: string, limit = 100): Promise<CryptoHistory[]> {
-    return new Promise((resolve, reject) => {
-      this.db.all(
-        `SELECT * FROM crypto_history 
-         WHERE crypto_id = ? 
-         ORDER BY timestamp DESC 
-         LIMIT ?`,
-        [cryptoId, limit],
-        (err, rows) => {
-          if (err) {
-            reject(err);
-            return;
-          }
-          resolve(rows as CryptoHistory[]);
-        }
-      );
-    });
+    try {
+      const { data, error } = await supabase
+        .from('crypto_history')
+        .select('*')
+        .eq('crypto_id', cryptoId)
+        .order('timestamp', { ascending: false })
+        .limit(limit);
+
+      if (error) {
+        throw error;
+      }
+
+      return data || [];
+    } catch (error) {
+      console.error('Error getting crypto history:', error);
+      return [];
+    }
   }
 
   async getPopularCryptos(): Promise<CryptoCurrency[]> {
-    return new Promise((resolve, reject) => {
+    try {
       // First try to get recent cached data (within 15 minutes)
-      this.db.all(
-        `SELECT * FROM crypto_prices 
-         WHERE datetime(cached_at) > datetime('now', '-15 minutes')
-         ORDER BY market_cap_rank ASC 
-         LIMIT 10`,
-        [],
-        (err, rows) => {
-          if (err) {
-            reject(err);
-            return;
-          }
-          
-          // If we have recent data, return it
-          if (rows && rows.length >= 5) {
-            resolve(rows as CryptoCurrency[]);
-            return;
-          }
-          
-          // Otherwise, get any cached data (even if older) to show something
-          this.db.all(
-            `SELECT * FROM crypto_prices 
-             WHERE market_cap_rank IS NOT NULL
-             ORDER BY market_cap_rank ASC 
-             LIMIT 10`,
-            [],
-            (err2, allRows) => {
-              if (err2) {
-                reject(err2);
-                return;
-              }
-              resolve(allRows as CryptoCurrency[]);
-            }
-          );
-        }
-      );
-    });
+      const { data: recentData, error: recentError } = await supabase
+        .from('crypto_prices')
+        .select('*')
+        .gte('cached_at', new Date(Date.now() - this.CACHE_DURATION).toISOString())
+        .order('market_cap_rank', { ascending: true })
+        .limit(10);
+
+      if (recentError) {
+        throw recentError;
+      }
+
+      // If we have recent data, return it
+      if (recentData && recentData.length >= 5) {
+        return recentData;
+      }
+
+      // Otherwise, get any cached data (even if older) to show something
+      const { data: allData, error: allError } = await supabase
+        .from('crypto_prices')
+        .select('*')
+        .not('market_cap_rank', 'is', null)
+        .order('market_cap_rank', { ascending: true })
+        .limit(10);
+
+      if (allError) {
+        throw allError;
+      }
+
+      return allData || [];
+    } catch (error) {
+      console.error('Error getting popular cryptos:', error);
+      return [];
+    }
   }
 }
