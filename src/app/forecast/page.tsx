@@ -241,15 +241,15 @@ export default function Forecast() {
                 <div className="text-center">
                   <h3 className="font-bold text-[var(--text-primary)] mb-4">Moving Averages</h3>
                   <div className="space-y-2">
-                    <p className="text-sm">MA7: ${forecastData.technicals.ma7.toFixed(2)}</p>
-                    <p className="text-sm">MA14: ${forecastData.technicals.ma14.toFixed(2)}</p>
-                    <p className="text-sm">MA30: ${forecastData.technicals.ma30.toFixed(2)}</p>
+                    <p className="text-sm text-gray-500">MA7: ${forecastData.technicals.ma7.toFixed(2)}</p>
+                    <p className="text-sm text-gray-500">MA14: ${forecastData.technicals.ma14.toFixed(2)}</p>
+                    <p className="text-sm text-gray-500">MA30: ${forecastData.technicals.ma30.toFixed(2)}</p>
                   </div>
                 </div>
                 <div className="text-center">
                   <h3 className="font-bold text-[var(--text-primary)] mb-4">Momentum</h3>
                   <div className="space-y-2">
-                    <p className="text-sm">RSI: {forecastData.technicals.rsi.toFixed(1)}</p>
+                    <p className="text-sm text-gray-500">RSI: {forecastData.technicals.rsi.toFixed(1)}</p>
                     <p className={`text-sm px-2 py-1 rounded ${
                       forecastData.technicals.rsi > 70 ? 'bg-red-500/20 text-red-300' :
                       forecastData.technicals.rsi < 30 ? 'bg-green-500/20 text-green-300' :
@@ -263,7 +263,7 @@ export default function Forecast() {
                 <div className="text-center">
                   <h3 className="font-bold text-[var(--text-primary)] mb-4">Risk</h3>
                   <div className="space-y-2">
-                    <p className="text-sm">Volatility: {forecastData.technicals.volatility.toFixed(1)}%</p>
+                    <p className="text-sm text-gray-500">Volatility: {forecastData.technicals.volatility.toFixed(1)}%</p>
                     <p className={`text-sm px-2 py-1 rounded ${
                       forecastData.technicals.volatility > 50 ? 'bg-red-500/20 text-red-300' :
                       forecastData.technicals.volatility > 20 ? 'bg-yellow-500/20 text-yellow-300' :
@@ -310,20 +310,20 @@ export default function Forecast() {
                   <h3 className="font-bold text-[var(--text-primary)] mb-4">Sentiment Breakdown</h3>
                   <div className="space-y-3">
                     <div className="flex justify-between items-center">
-                      <span className="text-sm">Global Market</span>
-                      <span className="text-sm font-bold">{Math.round(forecastData.sentiment.globalSentiment)}/100</span>
+                      <span className="text-sm text-gray-500">Global Market</span>
+                      <span className="text-sm font-bold text-gray-500">{Math.round(forecastData.sentiment.globalSentiment)}/100</span>
                     </div>
                     <div className="flex justify-between items-center">
-                      <span className="text-sm">Volume Activity</span>
-                      <span className="text-sm font-bold">{Math.round(forecastData.sentiment.volumeSentiment)}/100</span>
+                      <span className="text-sm text-gray-500">Volume Activity</span>
+                      <span className="text-sm font-bold text-gray-500">{Math.round(forecastData.sentiment.volumeSentiment)}/100</span>
                     </div>
                     <div className="flex justify-between items-center">
-                      <span className="text-sm">Trending Interest</span>
-                      <span className="text-sm font-bold">{Math.round(forecastData.sentiment.trendingSentiment)}/100</span>
+                      <span className="text-sm text-gray-500">Trending Interest</span>
+                      <span className="text-sm font-bold text-gray-500">{Math.round(forecastData.sentiment.trendingSentiment)}/100</span>
                     </div>
                     <div className="flex justify-between items-center">
-                      <span className="text-sm">Coin Specific</span>
-                      <span className="text-sm font-bold">{Math.round(forecastData.sentiment.coinSpecificSentiment)}/100</span>
+                      <span className="text-sm text-gray-500">Coin Specific</span>
+                      <span className="text-sm font-bold text-gray-500">{Math.round(forecastData.sentiment.coinSpecificSentiment)}/100</span>
                     </div>
                   </div>
                 </div>
