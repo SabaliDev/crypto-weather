@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { CryptoCacheService } from '../../../lib/crypto-cache'
+import { CryptoCacheService } from '../../../../lib/crypto-cache'
 
 export const dynamic = 'force-dynamic'
 

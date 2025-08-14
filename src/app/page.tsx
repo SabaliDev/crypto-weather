@@ -42,7 +42,7 @@ export default function Home() {
 
   const fetchCryptoData = async (coin: string, refresh = false) => {
     try {
-      const response = await fetch(`/api/crypto?coin=${coin}${refresh ? '&refresh=true' : ''}`)
+      const response = await fetch(`/api/crypto/single?coin=${coin}${refresh ? '&refresh=true' : ''}`)
       const result = await response.json()
       if (result.success) {
         setCryptoData(result.data)
@@ -88,7 +88,7 @@ export default function Home() {
     setLoading(true)
     
     try {
-      const response = await fetch(`/api/crypto?coin=${searchQuery.toLowerCase().trim()}`)
+      const response = await fetch(`/api/crypto/single?coin=${searchQuery.toLowerCase().trim()}`)
       const result = await response.json()
       
       if (result.success) {
