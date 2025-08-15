@@ -65,7 +65,8 @@ export default function Regional() {
   useEffect(() => {
     const fetchRegionalData = async () => {
       try {
-        const response = await fetch('/api/regional?analysis=true')
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080'
+        const response = await fetch(`${apiUrl}/api/regional?analysis=true`)
         const result = await response.json()
         if (result.success) {
           setRegionalData(result.data)
@@ -85,7 +86,8 @@ export default function Regional() {
     
     setQueryLoading(true)
     try {
-      const response = await fetch('/api/regional', {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080'
+      const response = await fetch(`${apiUrl}/api/regional`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -110,7 +112,8 @@ export default function Regional() {
   const refreshData = async () => {
     setLoading(true)
     try {
-      const response = await fetch('/api/regional?analysis=true')
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080'
+      const response = await fetch(`${apiUrl}/api/regional?analysis=true`)
       const result = await response.json()
       if (result.success) {
         setRegionalData(result.data)

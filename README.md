@@ -5,7 +5,8 @@ A fun and engaging cryptocurrency tracking application that presents market cond
 ![Next.js](https://img.shields.io/badge/Next.js-14.0.3-black)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.2.2-blue)
 ![React](https://img.shields.io/badge/React-18.2.0-blue)
-![SQLite](https://img.shields.io/badge/SQLite-5.1.7-green)
+![Supabase](https://img.shields.io/badge/Supabase-2.55.0-green)
+![Express](https://img.shields.io/badge/Express-4.18.2-yellow)
 
 ## ⚠️ Important Notice
 
@@ -82,33 +83,27 @@ A fun and engaging cryptocurrency tracking application that presents market cond
 
 ### Tech Stack
 - **Frontend**: Next.js 14 with React 18 and TypeScript
+- **Backend**: Node.js with Express.js
 - **Styling**: Tailwind CSS with custom crypto-themed animations
-- **Database**: SQLite for caching cryptocurrency data
-- **Data Source**: CoinGecko API via MCP integration
-- **AI/ML**: Custom forecast algorithms with technical analysis
+- **Database**: Supabase (PostgreSQL) for caching cryptocurrency data
+- **Data Source**: CoinGecko API direct integration
+- **Deployment**: Vercel for both frontend and backend
 
 ### Project Structure
 ```
-src/
-├── app/                    # Next.js App Router
-│   ├── api/               # API routes
-│   │   ├── crypto/        # Cryptocurrency data endpoints
-│   │   ├── forecast/      # Forecast generation
-│   │   ├── regional/      # Regional analysis
-│   │   └── weather/       # Weather data integration
-│   ├── forecast/          # Advanced forecast page
-│   ├── regional/          # Regional analysis page
-│   ├── about/            # About page
-│   └── layout.tsx        # Root layout
-├── components/            # Reusable React components
-│   ├── Header.tsx        # Navigation header
-│   └── Footer.tsx        # Footer with attribution
-└── lib/                  # Utility libraries
-    ├── crypto-cache.ts   # Cryptocurrency data caching
-    ├── database.ts       # SQLite database operations
-    ├── forecast-engine.ts # Advanced forecasting algorithms
-    ├── smart-forecast-engine.ts # AI-enhanced predictions
-    └── mcp-client.ts     # Model Context Protocol client
+crypto-weath/
+├── backend/                 # Node.js Express API server
+│   ├── config/             # Supabase configuration
+│   ├── routes/             # API route handlers
+│   ├── services/           # Business logic (crypto cache)
+│   ├── server.js           # Express server entry point
+│   └── package.json        # Backend dependencies
+│
+├── src/                    # Next.js frontend
+│   ├── app/               # App Router pages
+│   └── components/        # React components
+│
+└── supabase-schema.sql     # Database schema
 ```
 
 ## 📊 Data Sources

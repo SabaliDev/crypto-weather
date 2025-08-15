@@ -63,7 +63,8 @@ export default function Forecast() {
         confidence: confidenceLevel,
         mock: useMockData.toString()
       })
-      const response = await fetch(`/api/forecast?${params}`)
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080'
+      const response = await fetch(`${apiUrl}/api/forecast?${params}`)
       const result = await response.json()
       if (result.success) {
         setForecastData(result.data)

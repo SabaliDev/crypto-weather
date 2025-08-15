@@ -1,35 +1,11 @@
-import { supabase } from './supabase';
-import { getMCPClient } from './mcp-client';
+const { supabase } = require('../config/supabase');
 
-export interface CryptoCurrency {
-  id: string;
-  symbol: string;
-  name: string;
-  current_price?: number;
-  market_cap?: number;
-  market_cap_rank?: number;
-  price_change_24h?: number;
-  price_change_percentage_24h?: number;
-  last_updated?: string;
-}
-
-export interface CryptoHistory {
-  crypto_id: string;
-  price: number;
-  market_cap?: number;
-  volume?: number;
-  timestamp: string;
-}
-
-export class CryptoCacheService {
-  private mcpClient = getMCPClient();
-  private readonly CACHE_DURATION = 15 * 60 * 1000; // 15 minutes
-
-  public getMCPClient() {
-    return this.mcpClient;
+class CryptoCacheService {
+  constructor() {
+    this.CACHE_DURATION = 15 * 60 * 1000; // 15 minutes
   }
 
-  async getCachedCrypto(symbol: string): Promise<CryptoCurrency | null> {
+  async getCachedCrypto(symbol) {
     try {
       const { data, error } = await supabase
         .from('crypto_prices')
@@ -49,7 +25,7 @@ export class CryptoCacheService {
     }
   }
 
-  async cacheCrypto(crypto: CryptoCurrency): Promise<void> {
+  async cacheCrypto(crypto) {
     try {
       const { error } = await supabase
         .from('crypto_prices')
@@ -75,7 +51,7 @@ export class CryptoCacheService {
     }
   }
 
-  async getCryptoFromAPI(symbol: string): Promise<CryptoCurrency | null> {
+  async getCryptoFromAPI(symbol) {
     try {
       // First try searching by ID directly
       let response = await fetch(
@@ -119,7 +95,7 @@ export class CryptoCacheService {
     }
   }
 
-  async getCrypto(symbol: string, forceRefresh = false): Promise<CryptoCurrency | null> {
+  async getCrypto(symbol, forceRefresh = false) {
     if (!forceRefresh) {
       const cached = await this.getCachedCrypto(symbol);
       if (cached) {
@@ -135,7 +111,7 @@ export class CryptoCacheService {
     return freshData;
   }
 
-  async addCryptoHistory(history: CryptoHistory): Promise<void> {
+  async addCryptoHistory(history) {
     try {
       const { error } = await supabase
         .from('crypto_history')
@@ -156,7 +132,7 @@ export class CryptoCacheService {
     }
   }
 
-  async getCryptoHistory(cryptoId: string, limit = 100): Promise<CryptoHistory[]> {
+  async getCryptoHistory(cryptoId, limit = 100) {
     try {
       const { data, error } = await supabase
         .from('crypto_history')
@@ -176,7 +152,7 @@ export class CryptoCacheService {
     }
   }
 
-  async getPopularCryptos(): Promise<CryptoCurrency[]> {
+  async getPopularCryptos() {
     try {
       // First try to get recent cached data (within 15 minutes)
       const { data: recentData, error: recentError } = await supabase
@@ -214,3 +190,5 @@ export class CryptoCacheService {
     }
   }
 }
+
+module.exports = { CryptoCacheService };

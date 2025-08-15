@@ -42,7 +42,8 @@ export default function Home() {
 
   const fetchCryptoData = async (coin: string, refresh = false) => {
     try {
-      const response = await fetch(`/api/crypto/single?coin=${coin}${refresh ? '&refresh=true' : ''}`)
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'
+      const response = await fetch(`${apiUrl}/api/crypto/single?coin=${coin}${refresh ? '&refresh=true' : ''}`)
       const result = await response.json()
       if (result.success) {
         setCryptoData(result.data)
@@ -54,7 +55,8 @@ export default function Home() {
 
   const fetchPopularCryptos = async () => {
     try {
-      const response = await fetch('/api/crypto/popular')
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'
+      const response = await fetch(`${apiUrl}/api/crypto/popular`)
       const result = await response.json()
       if (result.success) {
         setPopularCryptos(result.data)
@@ -88,7 +90,8 @@ export default function Home() {
     setLoading(true)
     
     try {
-      const response = await fetch(`/api/crypto/single?coin=${searchQuery.toLowerCase().trim()}`)
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'
+      const response = await fetch(`${apiUrl}/api/crypto/single?coin=${searchQuery.toLowerCase().trim()}`)
       const result = await response.json()
       
       if (result.success) {
