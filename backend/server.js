@@ -13,6 +13,7 @@ const PORT = process.env.PORT || 8080; // Changed to match the .env file
 app.use(cors({
   origin: [
     'http://localhost:3000',
+    'http://localhost:3001',
     'https://crypto-weather-app-rho.vercel.app',
     'https://*.vercel.app'
   ],
