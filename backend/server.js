@@ -15,6 +15,9 @@ app.use(cors({
     'http://localhost:3000',
     'http://localhost:3001',
     'https://crypto-weather-app-rho.vercel.app',
+    'https://crypto-weather-mcp.netlify.app',
+    'https://crypto-weather-apps.netlify.app',
+    'https://*.netlify.app',
     'https://*.vercel.app'
   ],
   credentials: true
