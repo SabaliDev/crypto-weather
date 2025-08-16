@@ -11,14 +11,14 @@ export default function Header() {
   }
 
   return (
-    <header className="flex items-center justify-between whitespace-nowrap border-b border-solid border-[var(--surface-color)] px-10 py-4">
+    <header className="flex items-center justify-between border-b border-solid border-[var(--surface-color)] px-4 md:px-10 py-4 flex-wrap gap-4">
       <div className="flex items-center gap-3 text-[var(--text-primary)]">
         
         <h2 className="text-[var(--text-primary)] text-xl font-bold animate-slide-in">🌊 Crypto Weather</h2>
       </div>
-      <nav className="hidden md:flex items-center gap-8 relative z-10">
+      <nav className="flex items-center gap-4 md:gap-8 relative z-10 flex-wrap">
         <Link 
-          className={`font-semibold transition-all duration-300 text-sm font-medium hover-scale ${
+          className={`font-semibold transition-all duration-300 text-xs md:text-sm font-medium hover-scale ${
             isActive('/') ? 'text-[var(--crypto-blue)]' : 'text-[var(--text-secondary)] hover:text-[var(--crypto-blue)]'
           }`} 
           href="/"
@@ -26,7 +26,7 @@ export default function Header() {
           🏠 Home
         </Link>
         <Link 
-          className={`transition-all duration-300 text-sm font-medium hover-scale ${
+          className={`transition-all duration-300 text-xs md:text-sm font-medium hover-scale ${
             isActive('/forecast') ? 'text-[var(--crypto-purple)]' : 'text-[var(--text-secondary)] hover:text-[var(--crypto-purple)]'
           }`} 
           href="/forecast"
@@ -34,7 +34,7 @@ export default function Header() {
           🔮 Forecast
         </Link>
         <Link 
-          className={`transition-all duration-300 text-sm font-medium hover-scale ${
+          className={`transition-all duration-300 text-xs md:text-sm font-medium hover-scale ${
             isActive('/regional') ? 'text-[var(--crypto-green)]' : 'text-[var(--text-secondary)] hover:text-[var(--crypto-green)]'
           }`} 
           href="/regional"
@@ -42,7 +42,7 @@ export default function Header() {
           🌍 Regional
         </Link>
         <Link 
-          className={`transition-all duration-300 text-sm font-medium hover-scale ${
+          className={`transition-all duration-300 text-xs md:text-sm font-medium hover-scale ${
             isActive('/about') ? 'text-[var(--crypto-orange)]' : 'text-[var(--text-secondary)] hover:text-[var(--crypto-orange)]'
           }`} 
           href="/about"
